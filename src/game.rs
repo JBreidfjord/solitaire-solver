@@ -1,4 +1,4 @@
-use std::fmt::{Debug, Formatter};
+use std::fmt::{Debug, Display, Formatter};
 use std::hash::Hash;
 
 use rand::prelude::SliceRandom;
@@ -8,7 +8,7 @@ use strum::{EnumIter, IntoEnumIterator};
 
 use Rank::{Ace, Jack, King, Queen};
 
-#[derive(EnumIter, Copy, Clone, Eq, Hash, PartialEq, Serialize, Deserialize)]
+#[derive(EnumIter, Debug, Copy, Clone, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum Suit {
     Heart,
     Diamond,
@@ -16,7 +16,7 @@ pub enum Suit {
     Spade,
 }
 
-impl Debug for Suit {
+impl Display for Suit {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let suit_char = match self {
             Suit::Heart => '\u{2665}',
@@ -28,7 +28,7 @@ impl Debug for Suit {
     }
 }
 
-#[derive(EnumIter, Copy, Clone, Eq, Hash, PartialEq, PartialOrd, Serialize, Deserialize)]
+#[derive(EnumIter, Debug, Copy, Clone, Eq, Hash, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub enum Rank {
     Ace = 1,
     Two = 2,
@@ -45,7 +45,7 @@ pub enum Rank {
     King,
 }
 
-impl Debug for Rank {
+impl Display for Rank {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let rank = match self {
             Ace => "A",
@@ -64,7 +64,7 @@ pub enum Color {
     Black,
 }
 
-#[derive(Copy, Clone, Eq, Hash, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub struct Card {
     pub suit: Suit,
     pub rank: Rank,
@@ -111,9 +111,22 @@ impl Card {
     }
 }
 
-impl Debug for Card {
+impl Display for Card {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}{:?}", self.rank, self.suit)
+        // Since 10 takes up 2 chars while the rest are 1, we right align and pad with an extra space
+        write!(f, "{:>3}", format!("{}{}", self.rank, self.suit))
+    }
+}
+
+pub struct MaybeCard(pub Option<Card>);
+
+impl Display for MaybeCard {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        if let Some(card) = &self.0 {
+            Display::fmt(card, f)
+        } else {
+            write!(f, "   ")
+        }
     }
 }
 
@@ -372,13 +385,13 @@ where
     E: mctser::EndStatus,
     A: mctser::Action,
 {
-    fn evaluate(&self) -> f32;
+    fn evaluate(&self, print_components: bool) -> f32;
 
     fn revert(&self, action: &A) -> Self;
 }
 
 impl State<Player, EndState, Move> for CribbageSolitaire {
-    fn evaluate(&self) -> f32 {
+    fn evaluate(&self, _: bool) -> f32 {
         self.score as f32
     }
 

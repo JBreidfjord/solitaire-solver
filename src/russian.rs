@@ -1,4 +1,6 @@
-use std::collections::HashSet;
+use std::cmp::Ordering;
+use std::collections::{HashMap, HashSet};
+use std::fmt::{Display, Formatter};
 
 use derivative::Derivative;
 use mctser::{GameState, Player as _Player};
@@ -6,9 +8,7 @@ use rand::prelude::SliceRandom;
 use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
-use crate::game::{Card, Rank, State};
-use crate::game::Rank::Ace;
-use crate::game::Suit::Spade;
+use crate::game::{Card, MaybeCard, Rank, State};
 
 // Rules:
 // - Number cards are stacked by alternating colour and decreasing value,
@@ -25,10 +25,10 @@ use crate::game::Suit::Spade;
 pub struct ProletariatsPatience {
     free_cell: Option<Card>,
     tableau: [Vec<Card>; 9],
-    // #[derivative(PartialEq = "ignore")]
-    // #[derivative(Hash = "ignore")]
-    // #[derivative(Debug = "ignore")]
-    // history: Vec<Move>,
+    #[derivative(PartialEq = "ignore")]
+    #[derivative(Hash = "ignore")]
+    #[derivative(Debug = "ignore")]
+    history: Vec<Move>,
 }
 
 impl ProletariatsPatience {
@@ -43,13 +43,13 @@ impl ProletariatsPatience {
         Self {
             free_cell: None,
             tableau: Self::random_tableau(),
-            // history: Vec::new(),
+            history: Vec::new(),
         }
     }
 
     pub fn apply_move(&self, mv: Move) -> Self {
-        // let mut history = self.history.clone();
-        // history.push(mv.clone());
+        let mut history = self.history.clone();
+        history.push(mv.clone());
 
         let mut tableau = self.tableau.clone();
         match mv {
@@ -72,7 +72,7 @@ impl ProletariatsPatience {
                 Self {
                     free_cell: Some(card),
                     tableau,
-                    // history,
+                    history,
                 }
             }
             Move::Unfree { card, to } => {
@@ -87,7 +87,7 @@ impl ProletariatsPatience {
                 Self {
                     free_cell: None,
                     tableau,
-                    // history,
+                    history,
                 }
             }
             Move::Stack {
@@ -111,18 +111,18 @@ impl ProletariatsPatience {
                 Self {
                     free_cell: self.free_cell,
                     tableau,
-                    // history,
+                    history,
                 }
             }
         }
     }
 
     pub fn revert_move(&self, mv: &Move) -> Self {
-        // let mut history = self.history.clone();
-        // let last_move = history.pop().expect("Tried to revert a root state");
-        // if &last_move != mv {
-        //     panic!("Tried to revert {mv:?} but last move was {last_move:?}");
-        // }
+        let mut history = self.history.clone();
+        let last_move = history.pop().expect("Tried to revert a root state");
+        if &last_move != mv {
+            panic!("Tried to revert {mv:?} but last move was {last_move:?}");
+        }
 
         let mut tableau = self.tableau.clone();
         match mv {
@@ -134,7 +134,7 @@ impl ProletariatsPatience {
                 Self {
                     free_cell: None,
                     tableau,
-                    // history,
+                    history,
                 }
             }
             Move::Unfree { card, to } => {
@@ -153,7 +153,7 @@ impl ProletariatsPatience {
                 Self {
                     free_cell: Some(*card),
                     tableau,
-                    // history,
+                    history,
                 }
             }
             Move::Stack { cards, from, to } => {
@@ -162,7 +162,7 @@ impl ProletariatsPatience {
                 Self {
                     free_cell: self.free_cell,
                     tableau,
-                    // history,
+                    history,
                 }
             }
         }
@@ -238,15 +238,15 @@ impl ProletariatsPatience {
         //     - Then, starting at the bottom of the stack (i.e. the deepest card):
         //       - Check for valid destinations (e.g. top card is stackable or empty column)
         for (from_idx, from_col) in self.tableau.iter().enumerate() {
-            // No moves can be made from this column
-            if from_col.is_empty() {
+            // No moves can be made from this column (completed face stacks are locked)
+            if from_col.is_empty() || Self::is_completed_face_stack(from_col) {
                 continue;
             }
             let top_card = from_col.last().expect("Vec was checked to be non-empty");
 
             // We can move the top card to the free cell given that the free cell is empty and
             // this column isn't a completed face card stack (since those can't ever be moved)
-            if self.free_cell.is_none() && !Self::is_completed_face_stack(from_col) {
+            if self.free_cell.is_none() {
                 moves.push(Move::Free {
                     card: *top_card,
                     from: from_idx,
@@ -266,6 +266,7 @@ impl ProletariatsPatience {
                     break;
                 }
             }
+            let stack_is_entire_col = stack.len() == from_col.len();
 
             // We now have `n` valid stacks, where `n` is the length of the stack,
             // so we look for valid destinations for all of them
@@ -274,6 +275,13 @@ impl ProletariatsPatience {
                 let mut moved_to_empty_column = false; // all empty column moves are the same
                 for (to_idx, to_col) in self.tableau.iter().enumerate() {
                     if from_idx == to_idx {
+                        continue;
+                    }
+
+                    // We don't want moves that just move a stack from one empty column to another,
+                    // so if this stack is the entire column (and therefore would leave it empty),
+                    // and the dest is empty, we skip
+                    if to_col.is_empty() && stack_is_entire_col {
                         continue;
                     }
 
@@ -317,42 +325,51 @@ impl ProletariatsPatience {
 
         // Remove all moves we used in the last `n` turns to prevent cycles
         // TODO: There's probably a better way to handle cycles than this
-        // moves.retain(|m| {
-        //     !self
-        //         .history
-        //         .iter()
-        //         .rev()
-        //         .take(8)
-        //         .collect::<Vec<_>>()
-        //         .contains(&m)
-        // });
+        moves.retain(|m| {
+            !self
+                .history
+                .iter()
+                .rev()
+                .take(8)
+                .collect::<Vec<_>>()
+                .contains(&m)
+        });
 
-        // Remove moves that are just moving the same cards as the last move
-        // if !self.history.is_empty() {
-        //     moves.retain(|m| {
-        //         let cards = match m {
-        //             Move::Free { card, .. } | Move::Unfree { card, .. } => &vec![*card],
-        //             Move::Stack { cards, .. } => cards,
-        //         };
-        //         let last_cards = match self
-        //             .history
-        //             .last()
-        //             .expect("History was checked to be non-empty")
-        //         {
-        //             Move::Free { card, .. } | Move::Unfree { card, .. } => &vec![*card],
-        //             Move::Stack { cards, .. } => cards,
-        //         };
-        //         cards != last_cards
-        //     });
-        // }
+        if !self.history.is_empty() {
+            let last_move = self
+                .history
+                .last()
+                .expect("History was checked to be non-empty");
 
-        // TODO: remove moves that are just moving the same card as last time
-        // e.g. moving 9H from 0->2 just to move it from 2->8 with the next move
+            // Remove moves that are just moving the same cards as the last move
+            let last_cards = match last_move {
+                Move::Free { card, .. } | Move::Unfree { card, .. } => &vec![*card],
+                Move::Stack { cards, .. } => cards,
+            };
+            moves.retain(|m| {
+                let cards = match m {
+                    Move::Free { card, .. } | Move::Unfree { card, .. } => &vec![*card],
+                    Move::Stack { cards, .. } => cards,
+                };
+                cards != last_cards
+            });
+
+            // If we just freed a card, we can't unfree it immediately
+            if last_move.is_free() {
+                moves.retain(|m| !m.is_unfree());
+            }
+        }
+
         // TODO: similarly we can remove moves that are reversions of the previous move
+        // TODO: Should we remove _all_ moves that could just be undone next turn?
 
         if moves.len() > 148 {
             println!("move len: {}", moves.len());
         }
+
+        // Sort descending so the "best" moves are at the front
+        moves.sort_unstable();
+        moves.reverse();
 
         moves
     }
@@ -367,7 +384,7 @@ impl ProletariatsPatience {
         }
     }
 
-    fn is_win(&self) -> bool {
+    pub fn is_win(&self) -> bool {
         let mut number_stacks = 0;
         let mut face_stacks = 0;
 
@@ -415,43 +432,37 @@ impl ProletariatsPatience {
     }
 
     pub fn is_terminal(&self) -> bool {
-        self.legal_moves().is_empty()
+        self.is_win() || self.legal_moves().is_empty()
     }
 
-    pub fn display_state(&self) {
-        println!("Free cell: {:?}", self.free_cell);
-        println!("Tableau:");
-        for column in &self.tableau {
-            println!("{column:?}");
+    pub fn display_history(&self) {
+        for mv in &self.history {
+            println!("{mv}");
         }
     }
-
-    // pub fn display_history(&self) {
-    //     for mv in &self.history {
-    //         println!("{mv:?}");
-    //     }
-    // }
 
     pub fn tableau(&self) -> &[Vec<Card>; 9] {
         &self.tableau
     }
 
-    // pub fn history(&self) -> &Vec<Move> {
-    //     &self.history
-    // }
+    pub fn history(&self) -> &Vec<Move> {
+        &self.history
+    }
 
     pub fn peek_column(&self, column: usize) -> Option<&Card> {
         self.tableau[column].last()
     }
 
-    fn heuristic_score(&self) -> f32 {
+    fn heuristic_score(&self, print_components: bool) -> f32 {
         // Weights for the heuristic components
         let weight_completed_stacks = 10.0; // 10.0
-        let weight_moves_available = 1.0; // 1.0
-        let weight_empty_columns = 5.0; // 5.0
-        let weight_free_cell = 2.0; // 2.0
-        let weight_repetition_penalty = 0.0; // 5.0
-        let weight_depth_penalty = 0.0; // 0.5
+        let weight_card_depth_penalty = 1.0;
+        let weight_stack_progress = 2.0;
+        let weight_moves_available = 0.5; // 1.0
+        let weight_empty_columns = 0.0; // 5.0
+        let weight_free_cell = 0.0; // 2.0
+        let weight_repetition_penalty = 1.0; // 5.0
+        let weight_depth_penalty = 0.25; // 0.5
 
         let mut score = 0.0;
 
@@ -467,12 +478,68 @@ impl ProletariatsPatience {
                     completed_face_stacks += 1;
                 }
             }
+            if print_components {
+                println!(
+                    "Completed stacks: {} * {weight_completed_stacks} = {}",
+                    completed_number_stacks + completed_face_stacks,
+                    (completed_number_stacks + completed_face_stacks) as f32
+                        * weight_completed_stacks
+                );
+            }
             score +=
                 (completed_number_stacks + completed_face_stacks) as f32 * weight_completed_stacks;
         }
 
+        // Depth of cards and progress of stacks
+        if weight_card_depth_penalty > 0.0 || weight_stack_progress > 0.0 {
+            let mut stack_size = 0;
+            let mut depth_error = 0;
+
+            for column in &self.tableau {
+                for cards in column.windows(2).rev() {
+                    if cards[1].can_stack_on(&cards[0]) {
+                        stack_size += 1;
+                    } else {
+                        break;
+                    }
+                }
+
+                for (depth, card) in column.iter().rev().enumerate() {
+                    if card.is_face_or_ace() {
+                        continue;
+                    }
+                    let goal_depth = card.rank as usize - 6;
+                    depth_error += goal_depth.abs_diff(depth);
+                }
+            }
+
+            if print_components {
+                println!(
+                    "Stack progress: {stack_size} * {weight_stack_progress} = {}",
+                    stack_size as f32 * weight_stack_progress
+                );
+            }
+            score += stack_size as f32 * weight_stack_progress;
+
+            if print_components {
+                println!(
+                    "Depth error: {depth_error} * -{weight_card_depth_penalty} = {}",
+                    depth_error as f32 * -weight_card_depth_penalty
+                );
+            }
+            score -= depth_error as f32 * weight_card_depth_penalty;
+        }
+
         // Number of Moves Available
-        score += self.legal_moves().len() as f32 * weight_moves_available;
+        let legal_moves = self.legal_moves();
+        if print_components {
+            println!(
+                "Moves available: {} * {weight_moves_available} = {}",
+                legal_moves.len(),
+                legal_moves.len() as f32 * weight_moves_available
+            );
+        }
+        score += legal_moves.len() as f32 * weight_moves_available;
 
         // Empty Columns
         if weight_empty_columns > 0.0 {
@@ -481,6 +548,12 @@ impl ProletariatsPatience {
                 .iter()
                 .filter(|column| column.is_empty())
                 .count();
+            if print_components {
+                println!(
+                    "Empty columns: {empty_columns} * {weight_empty_columns} = {}",
+                    empty_columns as f32 * weight_empty_columns
+                );
+            }
             score += empty_columns as f32 * weight_empty_columns;
         }
 
@@ -491,20 +564,45 @@ impl ProletariatsPatience {
             } else {
                 score -= weight_free_cell;
             }
+
+            if print_components {
+                println!(
+                    "Free cell: {:?} * {weight_free_cell} = {}",
+                    self.free_cell,
+                    if self.free_cell.is_none() {
+                        weight_free_cell
+                    } else {
+                        -weight_free_cell
+                    }
+                );
+            }
         }
 
         // Penalize repetitive moves
-        // if weight_repetition_penalty > 0.0 {
-        //     let mut move_counts = HashMap::new();
-        //     for mv in &self.history {
-        //         *move_counts.entry(mv).or_insert(0) += 1;
-        //     }
-        //
-        //     let repetitions = move_counts.values().sum::<usize>() - move_counts.len();
-        //     score -= repetitions as f32 * weight_repetition_penalty;
-        // }
-        //
-        // score -= self.history.len() as f32 * weight_depth_penalty;
+        if weight_repetition_penalty > 0.0 {
+            let mut move_counts = HashMap::new();
+            for mv in &self.history {
+                *move_counts.entry(mv).or_insert(0) += 1;
+            }
+
+            let repetitions = move_counts.values().sum::<usize>() - move_counts.len();
+            if print_components {
+                println!(
+                    "Repetition: {repetitions} * -{weight_repetition_penalty} = {}",
+                    repetitions as f32 * -weight_repetition_penalty,
+                )
+            }
+            score -= repetitions as f32 * weight_repetition_penalty;
+        }
+
+        if print_components {
+            println!(
+                "Depth: {} * -{weight_depth_penalty} = {}",
+                self.history.len(),
+                self.history.len() as f32 * -weight_depth_penalty,
+            )
+        }
+        score -= self.history.len() as f32 * weight_depth_penalty;
 
         score
     }
@@ -525,6 +623,71 @@ pub enum Move {
         card: Card,
         to: usize,
     },
+}
+
+impl Move {
+    pub fn is_free(&self) -> bool {
+        match *self {
+            Move::Free { .. } => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_unfree(&self) -> bool {
+        match *self {
+            Move::Unfree { .. } => true,
+            _ => false,
+        }
+    }
+}
+
+impl PartialOrd for Move {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Move {
+    fn cmp(&self, other: &Self) -> Ordering {
+        // Bigger stacks > smaller stacks > unfree > free
+        match self {
+            Move::Free { .. } => match other {
+                Move::Free { .. } => Ordering::Equal,
+                _ => Ordering::Less,
+            },
+            Move::Unfree { .. } => match other {
+                Move::Unfree { .. } => Ordering::Equal,
+                Move::Free { .. } => Ordering::Greater,
+                Move::Stack { .. } => Ordering::Less,
+            },
+            Move::Stack { cards, .. } => match other {
+                Move::Stack {
+                    cards: other_cards, ..
+                } => cards.len().cmp(&other_cards.len()),
+                _ => Ordering::Greater,
+            },
+        }
+    }
+}
+
+impl Display for Move {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Move::Free { card, from } => write!(f, "{from}->\u{1F0A0}\t{card}"),
+            Move::Unfree { card, to } => write!(f, "\u{1F0A0}->{to}\t{card}"),
+            Move::Stack { cards, from, to } => {
+                write!(
+                    f,
+                    "{from}->{to}\t{}",
+                    cards
+                        .iter()
+                        .map(|c| c.to_string())
+                        .collect::<Vec<_>>()
+                        .join(" ")
+                )
+            }
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -574,15 +737,53 @@ impl GameState<Player, EndState, Move> for ProletariatsPatience {
 }
 
 impl State<Player, EndState, Move> for ProletariatsPatience {
-    fn evaluate(&self) -> f32 {
+    fn evaluate(&self, print_components: bool) -> f32 {
         match self.end_status() {
             Some(end_state) => self.player().reward_when_outcome_is(&end_state),
-            None => self.heuristic_score(), // TODO: Should we give reward for in-progress games?
+            None => self.heuristic_score(print_components),
         }
     }
 
     fn revert(&self, action: &Move) -> Self {
         self.revert_move(action)
+    }
+}
+
+impl Display for ProletariatsPatience {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let max_col_len = self
+            .tableau
+            .iter()
+            .map(|col| col.len())
+            .max()
+            .expect("Tableau should not be fully empty");
+
+        for i in 0..max_col_len {
+            let row = format!(
+                "{} {} {} {} {} {} {} {} {}",
+                MaybeCard(self.tableau[0].get(i).copied()),
+                MaybeCard(self.tableau[1].get(i).copied()),
+                MaybeCard(self.tableau[2].get(i).copied()),
+                MaybeCard(self.tableau[3].get(i).copied()),
+                MaybeCard(self.tableau[4].get(i).copied()),
+                MaybeCard(self.tableau[5].get(i).copied()),
+                MaybeCard(self.tableau[6].get(i).copied()),
+                MaybeCard(self.tableau[7].get(i).copied()),
+                MaybeCard(self.tableau[8].get(i).copied()),
+            );
+            let free_cell = if i == 0 {
+                if let Some(free_card) = self.free_cell {
+                    format!("\t{free_card}")
+                } else {
+                    format!("\t{:^3}", '\u{1F0A0}')
+                }
+            } else {
+                "".to_owned()
+            };
+            writeln!(f, "{row}{free_cell}")?;
+        }
+
+        Ok(())
     }
 }
 

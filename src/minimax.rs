@@ -13,7 +13,7 @@ where
     A: Action,
 {
     if depth == 0 || game_state.end_status().is_some() {
-        return (game_state.evaluate(), vec![]);
+        return (game_state.evaluate(false), vec![]);
     }
 
     let legal_moves = game_state.possible_actions();

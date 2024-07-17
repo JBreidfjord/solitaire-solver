@@ -496,8 +496,8 @@ pub fn russian_2() -> ProletariatsPatience {
             },
             Card {
                 rank: Six,
-                // suit: Diamond, // maybe heart
-                suit: Heart,
+                suit: Diamond, // maybe heart
+                               // suit: Heart,
             },
             Card {
                 rank: Nine,
@@ -551,7 +551,102 @@ pub fn russian_2() -> ProletariatsPatience {
             },
             Card {
                 rank: Six,
-                // suit: Heart, // maybe diamond
+                suit: Heart, // maybe diamond
+                             // suit: Diamond,
+            },
+            Card {
+                rank: King,
+                suit: Spade,
+            },
+            Card {
+                rank: Ten,
+                suit: Heart,
+            },
+        ],
+    ]);
+
+    state.validate_tableau();
+    state
+}
+
+pub fn russian_3() -> ProletariatsPatience {
+    let state = ProletariatsPatience::new([
+        vec![
+            Card {
+                rank: Jack,
+                suit: Club,
+            },
+            Card {
+                rank: King,
+                suit: Heart,
+            },
+            Card {
+                rank: Nine,
+                suit: Club,
+            },
+            Card {
+                rank: Queen,
+                suit: Spade,
+            },
+        ],
+        vec![
+            Card {
+                rank: Nine,
+                suit: Heart,
+            },
+            Card {
+                rank: Ten,
+                suit: Spade,
+            },
+            Card {
+                rank: Ace,
+                suit: Heart,
+            },
+            Card {
+                rank: Seven,
+                suit: Heart,
+            },
+        ],
+        vec![
+            Card {
+                rank: Ace,
+                suit: Diamond,
+            },
+            Card {
+                rank: Six,
+                suit: Club, // maybe spade
+                            // suit: Spade,
+            },
+            Card {
+                rank: King,
+                suit: Diamond,
+            },
+            Card {
+                rank: Nine,
+                suit: Spade,
+            },
+        ],
+        vec![
+            Card {
+                rank: Six,
+                suit: Heart,
+            },
+            Card {
+                rank: Eight,
+                suit: Club,
+            },
+            Card {
+                rank: Six,
+                suit: Diamond,
+            },
+            Card {
+                rank: Queen,
+                suit: Club,
+            },
+        ],
+        vec![
+            Card {
+                rank: Seven,
                 suit: Diamond,
             },
             Card {
@@ -560,6 +655,83 @@ pub fn russian_2() -> ProletariatsPatience {
             },
             Card {
                 rank: Ten,
+                suit: Diamond,
+            },
+            Card {
+                rank: Ten,
+                suit: Heart,
+            },
+        ],
+        vec![
+            Card {
+                rank: Ace,
+                suit: Spade,
+            },
+            Card {
+                rank: Eight,
+                suit: Spade,
+            },
+            Card {
+                rank: Jack,
+                suit: Spade,
+            },
+            Card {
+                rank: Nine,
+                suit: Diamond,
+            },
+        ],
+        vec![
+            Card {
+                rank: Jack,
+                suit: Heart,
+            },
+            Card {
+                rank: Eight,
+                suit: Diamond,
+            },
+            Card {
+                rank: Queen,
+                suit: Heart,
+            },
+            Card {
+                rank: King,
+                suit: Club,
+            },
+        ],
+        vec![
+            Card {
+                rank: Ten,
+                suit: Club,
+            },
+            Card {
+                rank: Six,
+                suit: Spade, // maybe club
+                             // suit: Club,
+            },
+            Card {
+                rank: Jack,
+                suit: Diamond,
+            },
+            Card {
+                rank: Queen,
+                suit: Diamond,
+            },
+        ],
+        vec![
+            Card {
+                rank: Seven,
+                suit: Club,
+            },
+            Card {
+                rank: Ace,
+                suit: Club,
+            },
+            Card {
+                rank: Seven,
+                suit: Spade,
+            },
+            Card {
+                rank: Eight,
                 suit: Heart,
             },
         ],

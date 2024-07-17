@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 use std::fmt::Debug;
+use std::time::{Duration, Instant};
 
 use mctser::{Action, Player};
 
@@ -7,13 +8,13 @@ use crate::game::State;
 use crate::PEAK_ALLOC;
 use crate::russian::EndState;
 
-pub fn dfs<P, S, A>(state: &S) -> Option<Vec<A>>
+pub fn dfs<P, S, A>(state: S) -> Option<Vec<A>>
 where
     P: Player<EndState>,
     S: State<P, EndState, A> + Clone,
     A: Action + Debug,
 {
-    let mut state = state.clone();
+    let mut state = state;
     let actions = state.possible_actions();
     let mut seen = HashSet::new(); // TODO: replace with lru cache
     let mut path = Vec::new();
@@ -60,7 +61,11 @@ where
     None
 }
 
-pub fn dfs_r<P, S, A>(state: S) -> Option<Vec<A>>
+pub fn dfs_r<P, S, A>(
+    state: S,
+    max_depth: Option<usize>,
+    max_search_time: Option<Duration>,
+) -> Option<Vec<A>>
 where
     P: Player<EndState>,
     S: State<P, EndState, A> + Clone + Debug,
@@ -71,12 +76,18 @@ where
         path: Vec<A>,
         cache: &mut HashSet<S>,
         depth: usize,
+        search_start_time: Instant,
+        max_depth: usize,
+        max_search_time: Duration,
     ) -> Option<Vec<A>>
     where
         P: Player<EndState>,
         S: State<P, EndState, A> + Clone + Debug,
         A: Action + Debug,
     {
+        if depth >= max_depth || search_start_time.elapsed() > max_search_time {
+            return None;
+        }
         // If the insert returns `false`, we've already seen this state so we can skip
         if !cache.insert(state.clone()) {
             return None;
@@ -99,10 +110,18 @@ where
             path.push(mv.clone());
 
             print!(
-                "\rDepth: {depth}\tRAM: {}MB",
+                "\rDepth: {depth}\tRAM: {:.2}MB",
                 PEAK_ALLOC.current_usage_as_mb()
             );
-            let result = backtrack(next_state, path.clone(), cache, depth + 1);
+            let result = backtrack(
+                next_state,
+                path.clone(),
+                cache,
+                depth + 1,
+                search_start_time,
+                max_depth,
+                max_search_time,
+            );
             if result.is_some() {
                 return result;
             }
@@ -116,5 +135,41 @@ where
     }
 
     let mut cache = HashSet::new(); // TODO: replace with lru cache
-    backtrack(state, vec![], &mut cache, 0)
+    backtrack(
+        state,
+        vec![],
+        &mut cache,
+        0,
+        Instant::now(),
+        max_depth.unwrap_or(usize::MAX),
+        max_search_time.unwrap_or(Duration::MAX),
+    )
+}
+
+pub fn optimal_dfs<P, S, A>(state: S) -> Option<Vec<A>>
+where
+    P: Player<EndState>,
+    S: State<P, EndState, A> + Clone + Debug,
+    A: Action + Debug,
+{
+    let max_search_time = Duration::from_secs(60);
+    let mut best_depth = usize::MAX;
+    let mut best_path = None;
+    loop {
+        let start = Instant::now();
+        if let Some(path) = dfs_r(state.clone(), Some(best_depth), Some(max_search_time)) {
+            println!(
+                "\nFound solution with {} moves in {:.2}s\n",
+                path.len(),
+                start.elapsed().as_secs_f32()
+            );
+            best_depth = path.len();
+            best_path = Some(path);
+        } else {
+            println!("\nNo solution found for max depth {best_depth}");
+            break;
+        }
+    }
+
+    best_path
 }
