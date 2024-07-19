@@ -1,8 +1,6 @@
 use std::{io, thread};
-use std::rc::Rc;
 use std::time::{Duration, Instant};
 
-use mctser::GameState;
 use peak_alloc::PeakAlloc;
 
 use crate::dfs::optimal_dfs;
@@ -11,6 +9,7 @@ use crate::minimax::best_move;
 use crate::russian::ProletariatsPatience;
 use crate::states::russian_3;
 
+mod cribbage;
 mod dfs;
 mod game;
 mod minimax;
@@ -110,32 +109,6 @@ fn run_dfs() {
     } else {
         println!("\nNo solution found");
     }
-}
-
-fn run_mcts() {
-    // We use `RC` to store the game status. Create a new game and pass it to the search tree through `RC::clone()`.
-    let mut game = Rc::new(russian_3());
-    let mut search_tree = mctser::SearchTree::new(game.clone());
-
-    let start = Instant::now();
-    while game.end_status().is_none() {
-        // Make 1000 simulations to find the best move
-        let selected = search_tree.search(3).unwrap();
-        // Step forward to the next state using the action provided by the search tree
-        search_tree.renew(&selected).unwrap();
-        // Get current game state after the move
-        game = search_tree.get_game_state();
-        println!(
-            "Found move: {selected:?} | New score: {}",
-            game.evaluate(true)
-        );
-    }
-    // game.display_history();
-    println!(
-        "\nFinal Score: {}. Took {}s",
-        game.evaluate(true),
-        start.elapsed().as_secs_f32()
-    );
 }
 
 fn main() {

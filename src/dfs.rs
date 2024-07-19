@@ -2,89 +2,23 @@ use std::collections::HashSet;
 use std::fmt::Debug;
 use std::time::{Duration, Instant};
 
-use mctser::{Action, Player};
-
-use crate::game::State;
+use crate::game::{EndState, State};
 use crate::PEAK_ALLOC;
-use crate::russian::EndState;
 
-pub fn dfs<P, S, A>(state: S) -> Option<Vec<A>>
-where
-    P: Player<EndState>,
-    S: State<P, EndState, A> + Clone,
-    A: Action + Debug,
-{
-    let mut state = state;
-    let actions = state.possible_actions();
-    let mut seen = HashSet::new(); // TODO: replace with lru cache
-    let mut path = Vec::new();
-    let mut searched = 0;
-    for root_mv in actions {
-        println!("Checking root {root_mv:?}");
-        let mut stack = vec![root_mv];
-        while let Some(mv) = stack.pop() {
-            println!("\nChecking {mv:?}, currently stacked: {}", stack.len());
-            println!("{stack:?}");
-            state = state.act(&mv);
-            if !seen.contains(&state) {
-                searched += 1;
-                // print!("\r{searched}");
-                seen.insert(state.clone());
-                path.push(mv.clone());
-                if let Some(end_state) = state.end_status() {
-                    match end_state {
-                        EndState::Win => return Some(path),
-                        EndState::Loss => {
-                            let last_move = path.pop().unwrap();
-                            println!("Reverting {mv:?} for loss, last move: {last_move:?}");
-                            state = state.revert(&mv);
-                        }
-                    }
-                } else {
-                    for child_mv in state.possible_actions() {
-                        stack.push(child_mv);
-                    }
-                }
-            } else {
-                let last_move = path.pop().unwrap();
-                println!("Reverting {mv:?} for seen, last move: {last_move:?}");
-                state = state.revert(&mv);
-            }
-        }
-
-        // Revert the initial move
-        if let Some(last_mv) = path.pop() {
-            state = state.revert(&last_mv);
-        }
-    }
-
-    None
-}
-
-pub fn dfs_r<P, S, A>(
+pub fn dfs_r<S: State + Clone + Debug>(
     state: S,
     max_depth: Option<usize>,
     max_search_time: Option<Duration>,
-) -> Option<Vec<A>>
-where
-    P: Player<EndState>,
-    S: State<P, EndState, A> + Clone + Debug,
-    A: Action + Debug,
-{
-    fn backtrack<P, S, A>(
+) -> Option<Vec<<S as State>::Action>> {
+    fn backtrack<S: State + Clone + Debug>(
         state: S,
-        path: Vec<A>,
+        path: Vec<<S as State>::Action>,
         cache: &mut HashSet<S>,
         depth: usize,
         search_start_time: Instant,
         max_depth: usize,
         max_search_time: Duration,
-    ) -> Option<Vec<A>>
-    where
-        P: Player<EndState>,
-        S: State<P, EndState, A> + Clone + Debug,
-        A: Action + Debug,
-    {
+    ) -> Option<Vec<<S as State>::Action>> {
         if depth >= max_depth || search_start_time.elapsed() > max_search_time {
             return None;
         }
@@ -146,12 +80,7 @@ where
     )
 }
 
-pub fn optimal_dfs<P, S, A>(state: S) -> Option<Vec<A>>
-where
-    P: Player<EndState>,
-    S: State<P, EndState, A> + Clone + Debug,
-    A: Action + Debug,
-{
+pub fn optimal_dfs<S: State + Clone + Debug>(state: S) -> Option<Vec<<S as State>::Action>> {
     let max_search_time = Duration::from_secs(60);
     let mut best_depth = usize::MAX;
     let mut best_path = None;

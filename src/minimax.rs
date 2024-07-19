@@ -1,17 +1,9 @@
 use std::time::{Duration, Instant};
 
-use mctser::{Action, EndStatus, Player};
-
 use crate::game::State;
 
 /// Minimax algorithm for a single-player game
-fn minimax<P, S, E, A>(game_state: &S, depth: usize) -> (f32, Vec<A>)
-where
-    P: Player<E>,
-    S: State<P, E, A>,
-    E: EndStatus,
-    A: Action,
-{
+fn minimax<S: State>(game_state: &S, depth: usize) -> (f32, Vec<<S as State>::Action>) {
     if depth == 0 || game_state.end_status().is_some() {
         return (game_state.evaluate(false), vec![]);
     }
@@ -34,16 +26,13 @@ where
 }
 
 /// Function to choose the best move using minimax algorithm
-pub fn best_move<P, S, E, A>(
+pub fn best_move<S>(
     game_state: &S,
     max_depth: Option<usize>,
     search_time: Option<Duration>,
-) -> Option<(A, Vec<A>)>
+) -> Option<(<S as State>::Action, Vec<<S as State>::Action>)>
 where
-    P: Player<E>,
-    S: State<P, E, A>,
-    E: EndStatus,
-    A: Action,
+    S: State,
 {
     let max_depth = max_depth.or(Some(usize::MAX)).unwrap();
     let search_time = search_time.or(Some(Duration::MAX)).unwrap();

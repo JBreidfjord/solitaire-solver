@@ -3,12 +3,11 @@ use std::collections::{HashMap, HashSet};
 use std::fmt::{Display, Formatter};
 
 use derivative::Derivative;
-use mctser::{GameState, Player as _Player};
 use rand::prelude::SliceRandom;
 use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
-use crate::game::{Card, MaybeCard, Rank, State};
+use crate::game::{Card, EndState, MaybeCard, Rank, State};
 
 // Rules:
 // - Number cards are stacked by alternating colour and decreasing value,
@@ -108,57 +107,6 @@ impl ProletariatsPatience {
                     panic!("Moved cards don't match given cards {moved_cards:?} != {cards:?}");
                 }
                 tableau[to].extend(cards);
-                Self {
-                    free_cell: self.free_cell,
-                    tableau,
-                    history,
-                }
-            }
-        }
-    }
-
-    pub fn revert_move(&self, mv: &Move) -> Self {
-        let mut history = self.history.clone();
-        let last_move = history.pop().expect("Tried to revert a root state");
-        if &last_move != mv {
-            panic!("Tried to revert {mv:?} but last move was {last_move:?}");
-        }
-
-        let mut tableau = self.tableau.clone();
-        match mv {
-            Move::Free { card, from } => {
-                if self.free_cell.is_none() {
-                    panic!("Tried to remove a card from free cell but there wasn't one");
-                }
-                tableau[*from].push(*card);
-                Self {
-                    free_cell: None,
-                    tableau,
-                    history,
-                }
-            }
-            Move::Unfree { card, to } => {
-                let top_card = tableau[*to].pop().unwrap();
-                if card != &top_card {
-                    println!("{mv:?}");
-                    panic!(
-                        "Tried to revert unfreeing card that didn't match top card of given column"
-                    );
-                }
-                if self.free_cell.is_some() {
-                    println!("{self:?}");
-                    println!("{mv:?}");
-                    panic!("Tried to revert card into free cell but it was not empty");
-                }
-                Self {
-                    free_cell: Some(*card),
-                    tableau,
-                    history,
-                }
-            }
-            Move::Stack { cards, from, to } => {
-                tableau[*to].truncate(tableau[*to].len() - cards.len());
-                tableau[*from].extend(cards);
                 Self {
                     free_cell: self.free_cell,
                     tableau,
@@ -690,30 +638,8 @@ impl Display for Move {
     }
 }
 
-#[derive(Debug)]
-pub enum EndState {
-    Win,
-    Loss,
-}
-
-pub struct Player;
-
-impl mctser::EndStatus for EndState {}
-impl mctser::Action for Move {}
-
-impl mctser::Player<EndState> for Player {
-    fn reward_when_outcome_is(&self, outcome: &EndState) -> f32 {
-        match outcome {
-            EndState::Win => 1000.,
-            EndState::Loss => -1000.,
-        }
-    }
-}
-
-impl GameState<Player, EndState, Move> for ProletariatsPatience {
-    fn player(&self) -> Player {
-        Player
-    }
+impl State for ProletariatsPatience {
+    type Action = Move;
 
     fn end_status(&self) -> Option<EndState> {
         if self.is_terminal() {
@@ -734,18 +660,15 @@ impl GameState<Player, EndState, Move> for ProletariatsPatience {
     fn act(&self, action: &Move) -> Self {
         self.apply_move(action.to_owned())
     }
-}
 
-impl State<Player, EndState, Move> for ProletariatsPatience {
     fn evaluate(&self, print_components: bool) -> f32 {
         match self.end_status() {
-            Some(end_state) => self.player().reward_when_outcome_is(&end_state),
+            Some(end_state) => match end_state {
+                EndState::Win => 1000.,
+                EndState::Loss => -1000.,
+            },
             None => self.heuristic_score(print_components),
         }
-    }
-
-    fn revert(&self, action: &Move) -> Self {
-        self.revert_move(action)
     }
 }
 
@@ -787,12 +710,11 @@ impl Display for ProletariatsPatience {
     }
 }
 
-// TODO: Add test cases, especially for generating and applying moves
 #[cfg(test)]
 mod test {
     use crate::game::Rank::*;
     use crate::game::Suit::*;
-    use crate::states::{russian, russian_2};
+    use crate::states::russian;
 
     use super::*;
 
@@ -909,16 +831,5 @@ mod test {
             free_moves.len() + stack_moves.len(),
             "Additional moves: {additional_moves:?}"
         )
-    }
-
-    #[test]
-    fn revert_unapplies_action() {
-        let state = russian_2();
-
-        for mv in state.legal_moves() {
-            let child_state = state.apply_move(mv.clone());
-            let reverted_state = child_state.revert_move(&mv);
-            assert_eq!(reverted_state, state);
-        }
     }
 }

@@ -1,4 +1,5 @@
-use crate::game::{Card, CribbageSolitaire};
+use crate::cribbage::CribbageSolitaire;
+use crate::game::Card;
 use crate::game::Rank::{
     Ace, Eight, Five, Four, Jack, King, Nine, Queen, Seven, Six, Ten, Three, Two,
 };
