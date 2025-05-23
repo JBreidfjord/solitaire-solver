@@ -6,12 +6,29 @@ use strum::{EnumIter, IntoEnumIterator};
 
 use Rank::{Ace, Jack, King, Queen};
 
+use crate::game::Rank::{Eight, Five, Four, Nine, Seven, Six, Ten, Three, Two};
+use crate::game::Suit::{Club, Diamond, Heart, Spade};
+
 #[derive(EnumIter, Debug, Copy, Clone, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum Suit {
     Heart,
     Diamond,
     Club,
     Spade,
+}
+
+impl TryFrom<String> for Suit {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        match value.to_uppercase().as_str() {
+            "H" => Ok(Heart),
+            "D" => Ok(Diamond),
+            "C" => Ok(Club),
+            "S" => Ok(Spade),
+            _ => Err(format!("Could not find conversion case for input {value}")),
+        }
+    }
 }
 
 impl Display for Suit {
@@ -41,6 +58,29 @@ pub enum Rank {
     Jack,
     Queen,
     King,
+}
+
+impl TryFrom<String> for Rank {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        match value.to_uppercase().as_str() {
+            "A" => Ok(Ace),
+            "J" => Ok(Jack),
+            "Q" => Ok(Queen),
+            "K" => Ok(King),
+            "2" => Ok(Two),
+            "3" => Ok(Three),
+            "4" => Ok(Four),
+            "5" => Ok(Five),
+            "6" => Ok(Six),
+            "7" => Ok(Seven),
+            "8" => Ok(Eight),
+            "9" => Ok(Nine),
+            "10" => Ok(Ten),
+            _ => Err(format!("Could not find conversion case for input {value}")),
+        }
+    }
 }
 
 impl Display for Rank {
@@ -131,6 +171,12 @@ impl Display for MaybeCard {
 pub enum EndState {
     Win,
     Loss,
+}
+
+impl EndState {
+    pub fn is_win(&self) -> bool {
+        matches!(self, EndState::Win)
+    }
 }
 
 pub trait State: Eq + Hash {

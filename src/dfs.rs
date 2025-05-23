@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 use std::fmt::Debug;
+use std::io;
 use std::time::{Duration, Instant};
 
 use crate::game::{EndState, State};
@@ -26,10 +27,16 @@ pub fn dfs_r<S: State + Clone + Debug>(
         if !cache.insert(state.clone()) {
             return None;
         }
-        // println!("\nChecking state {state:?} with path {path:?}");
-        // io::stdin()
-        //     .read_line(&mut String::new())
-        //     .expect("Failed to read line");
+        if depth == max_depth {
+            // println!("\nChecking state {state:?} with path {path:?}\n");
+            println!("\n Checking state {state:?}\n");
+            for action in state.possible_actions() {
+                println!("{action:?}");
+            }
+            io::stdin()
+                .read_line(&mut String::new())
+                .expect("Failed to read line");
+        }
 
         if let Some(end_state) = state.end_status() {
             return match end_state {
@@ -83,6 +90,7 @@ pub fn dfs_r<S: State + Clone + Debug>(
 pub fn optimal_dfs<S: State + Clone + Debug>(state: S) -> Option<Vec<<S as State>::Action>> {
     let max_search_time = Duration::from_secs(60);
     let mut best_depth = usize::MAX;
+    // let mut best_depth = 1000;
     let mut best_path = None;
     loop {
         let start = Instant::now();

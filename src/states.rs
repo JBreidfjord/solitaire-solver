@@ -1,4 +1,8 @@
 use crate::cribbage::CribbageSolitaire;
+use crate::fortune;
+use crate::fortune::{FortunesFoundation, MajorArcana};
+use crate::fortune::Suit::{Cups, Pentacles, Swords, Wands};
+use crate::fortune::TarotCard::{Major, Minor};
 use crate::game::Card;
 use crate::game::Rank::{
     Ace, Eight, Five, Four, Jack, King, Nine, Queen, Seven, Six, Ten, Three, Two,
@@ -740,4 +744,1456 @@ pub fn russian_3() -> ProletariatsPatience {
 
     state.validate_tableau();
     state
+}
+
+pub fn fortune_1() -> FortunesFoundation {
+    FortunesFoundation::new([
+        vec![
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 17 }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 3 }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 20 }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 5 }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 21 }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 14 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 19 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 18 }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 15 }),
+            Major(MajorArcana { rank: 9 }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Swords,
+            }),
+        ],
+        vec![
+            // Empty column
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 2 }),
+            Major(MajorArcana { rank: 10 }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 4 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 1 }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 8 }),
+            Major(MajorArcana { rank: 12 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 11 }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 13 }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Cups,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 16 }),
+            Major(MajorArcana { rank: 6 }),
+            Major(MajorArcana { rank: 0 }),
+            Major(MajorArcana { rank: 7 }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Wands,
+            }),
+        ],
+    ])
+}
+
+pub fn fortune_2() -> FortunesFoundation {
+    FortunesFoundation::new([
+        vec![
+            Major(MajorArcana { rank: 9 }),
+            Major(MajorArcana { rank: 3 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 4 }),
+            Major(MajorArcana { rank: 20 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Cups,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 8 }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 18 }),
+            Major(MajorArcana { rank: 14 }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 1 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 6 }),
+            Major(MajorArcana { rank: 21 }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 5 }),
+            Major(MajorArcana { rank: 11 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 12 }),
+        ],
+        vec![
+            // Empty column
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 13 }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 0 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 15 }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 2 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 10 }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 19 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 16 }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 7 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 17 }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Cups,
+            }),
+        ],
+    ])
+}
+
+pub fn fortune_3() -> FortunesFoundation {
+    FortunesFoundation::new([
+        vec![
+            Major(MajorArcana { rank: 17 }),
+            Major(MajorArcana { rank: 9 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 5 }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Cups,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 19 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 10 }),
+            Major(MajorArcana { rank: 11 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 14 }),
+            Major(MajorArcana { rank: 8 }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 16 }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 4 }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Swords,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 7 }),
+            Major(MajorArcana { rank: 1 }),
+            Major(MajorArcana { rank: 0 }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 21 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Cups,
+            }),
+        ],
+        vec![
+            // Empty column
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 13 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 20 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 18 }),
+            Major(MajorArcana { rank: 12 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Cups,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 15 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 3 }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 2 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 6 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Cups,
+            }),
+        ],
+    ])
+}
+
+pub fn fortune_4() -> FortunesFoundation {
+    FortunesFoundation::new([
+        vec![
+            Major(MajorArcana { rank: 18 }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 9 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 11 }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 16 }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 8 }),
+            Major(MajorArcana { rank: 13 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 5 }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 19 }),
+            Major(MajorArcana { rank: 6 }),
+            Major(MajorArcana { rank: 10 }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 15 }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 1 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 14 }),
+            Major(MajorArcana { rank: 3 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            // Empty column
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 2 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 7 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 21 }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Cups,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 20 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 4 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Swords,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 17 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Swords,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 12 }),
+            Major(MajorArcana { rank: 0 }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Wands,
+            }),
+        ],
+    ])
+}
+
+pub fn fortune_5() -> FortunesFoundation {
+    FortunesFoundation::new([
+        vec![
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 10 }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 18 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 2 }),
+            Major(MajorArcana { rank: 11 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 16 }),
+            Major(MajorArcana { rank: 5 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 20 }),
+            Major(MajorArcana { rank: 4 }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 21 }),
+            Major(MajorArcana { rank: 17 }),
+        ],
+        vec![
+            // Empty column
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 19 }),
+            Major(MajorArcana { rank: 3 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 6 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 14 }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 15 }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 1 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 8 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 13 }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 7 }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Swords,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 0 }),
+            Major(MajorArcana { rank: 9 }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 12 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Wands,
+            }),
+        ],
+    ])
+}
+
+pub fn fortune_6() -> FortunesFoundation {
+    FortunesFoundation::new([
+        vec![
+            Major(MajorArcana { rank: 12 }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 18 }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 7 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 19 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 11 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Wands,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 8 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 9 }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 20 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 21 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 1 }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 2 }),
+        ],
+        vec![
+            // Empty column
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Pentacles,
+            }),
+            Major(MajorArcana { rank: 13 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 10 }),
+            Minor(fortune::Card {
+                rank: Seven,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Pentacles,
+            }),
+        ],
+        vec![
+            Major(MajorArcana { rank: 14 }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Six,
+                suit: Pentacles,
+            }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Two,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 4 }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Queen,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Jack,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Ten,
+                suit: Cups,
+            }),
+            Major(MajorArcana { rank: 0 }),
+            Minor(fortune::Card {
+                rank: Four,
+                suit: Swords,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: King,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Three,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Cups,
+            }),
+            Minor(fortune::Card {
+                rank: Nine,
+                suit: Wands,
+            }),
+            Major(MajorArcana { rank: 15 }),
+            Minor(fortune::Card {
+                rank: King,
+                suit: Wands,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Cups,
+            }),
+        ],
+        vec![
+            Minor(fortune::Card {
+                rank: Five,
+                suit: Swords,
+            }),
+            Minor(fortune::Card {
+                rank: Eight,
+                suit: Swords,
+            }),
+            Major(MajorArcana { rank: 16 }),
+            Major(MajorArcana { rank: 5 }),
+            Major(MajorArcana { rank: 6 }),
+            Major(MajorArcana { rank: 3 }),
+            Major(MajorArcana { rank: 17 }),
+        ],
+    ])
 }

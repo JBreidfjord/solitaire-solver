@@ -5,6 +5,11 @@ use crate::game::State;
 /// Minimax algorithm for a single-player game
 fn minimax<S: State>(game_state: &S, depth: usize) -> (f32, Vec<<S as State>::Action>) {
     if depth == 0 || game_state.end_status().is_some() {
+        if let Some(end_state) = game_state.end_status() {
+            if end_state.is_win() {
+                println!("game is won, score: {}", game_state.evaluate(false));
+            }
+        }
         return (game_state.evaluate(false), vec![]);
     }
 
@@ -44,6 +49,9 @@ where
     let time = Instant::now();
     for depth in 1..=max_depth {
         let legal_moves = game_state.possible_actions();
+        if legal_moves.len() == 1 {
+            return Some((legal_moves[0].clone(), vec![]));
+        }
         for m in legal_moves {
             let simulated_state = game_state.act(&m);
             let (score, path) = minimax(&simulated_state, depth - 1);
